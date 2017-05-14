@@ -1,5 +1,3 @@
-package pl.edu.agh.propertree.demo;
-
 import pl.edu.agh.propertree.Configurable;
 import pl.edu.agh.propertree.finder.ResourceFinder;
 import pl.edu.agh.propertree.generated.R;
