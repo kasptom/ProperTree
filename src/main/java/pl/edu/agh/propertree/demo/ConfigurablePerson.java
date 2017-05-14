@@ -2,13 +2,9 @@ package pl.edu.agh.propertree.demo;
 
 import pl.edu.agh.propertree.Configurable;
 import pl.edu.agh.propertree.finder.ResourceFinder;
-import pl.edu.agh.propertree.generated.RHardcoded;
-import pl.edu.agh.propertree.generator.AddressGenerator;
-import pl.edu.agh.propertree.generator.RGenerator;
+import pl.edu.agh.propertree.generated.R;
 
-import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
 
 public class ConfigurablePerson implements Configurable {
 
@@ -22,12 +18,12 @@ public class ConfigurablePerson implements Configurable {
 
     private ConfigurablePerson(String configPrefix) {
         this.configPrefix = configPrefix;
-        name = (String) ResourceFinder.getResource(RHardcoded.strings.name, configPrefix);
-        nationality = (String) ResourceFinder.getResource(RHardcoded.strings.nationality, configPrefix);
-        currency = (String) ResourceFinder.getResource(RHardcoded.strings.currency, configPrefix);
+        name = (String) ResourceFinder.getResource(R.strings.name, configPrefix);
+        nationality = (String) ResourceFinder.getResource(R.strings.nationality, configPrefix);
+        currency = (String) ResourceFinder.getResource(R.strings.currency, configPrefix);
 
-        height = (double) ResourceFinder.getResource(RHardcoded.doubles.height, configPrefix);
-        weight = (double) ResourceFinder.getResource(RHardcoded.doubles.weight, configPrefix);
+        height = (double) ResourceFinder.getResource(R.doubles.height, configPrefix);
+        weight = (double) ResourceFinder.getResource(R.doubles.weight, configPrefix);
     }
 
     @Override
@@ -49,9 +45,5 @@ public class ConfigurablePerson implements Configurable {
 
         english.printAttributes();
         polish.printAttributes();
-
-        Map<String, Integer> scanResult = new HashMap<>();
-        AddressGenerator.scanConfigStructure(AddressGenerator.CONFIG_ROOT, scanResult);
-        RGenerator.generateRClass();
     }
 }

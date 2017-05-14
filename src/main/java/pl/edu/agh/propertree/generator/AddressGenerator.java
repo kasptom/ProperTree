@@ -11,7 +11,9 @@ public class AddressGenerator {
     public static final File CONFIG_ROOT = new File(CONFIG_ROOT_PATH);
 
     private static final String PROPER_LINE_REGEX = "([\\p{Print}&&\\S]+)([\\s]+=[\\s]+)([\\p{Print}]+)";
+    private static final String NO_WHITESPACES_REGEX = "[\\p{Print}&&\\S]+";
     private static final Pattern PROPER_LINE_PATTERN = Pattern.compile(PROPER_LINE_REGEX);
+    private static final Pattern NO_WHITESPACES_PATTERN = Pattern.compile(NO_WHITESPACES_REGEX);
 
     static {
         prepareReferenceTableFile();
@@ -78,7 +80,7 @@ public class AddressGenerator {
 
     private static void addConfigEntry(String name, String value, String filePath, int lineNumber, Map<String, Integer> scanResult) {
 
-        FileWriter fileWriter = null;
+        FileWriter fileWriter;
         try {
             fileWriter = new FileWriter(GENERATED_REFERENCES_TABLE_PATH, true);
             Integer id;
@@ -158,14 +160,8 @@ public class AddressGenerator {
     }
 
     public static boolean hasString(String value) {
-        boolean hasString = true;
-        try {
-            //noinspection ResultOfMethodCallIgnored
-            Double.parseDouble(value);
-        } catch (NumberFormatException e) {
-            hasString = false;
-        }
-        return hasString;
+        Matcher noWhiteSpaceMatcher = NO_WHITESPACES_PATTERN.matcher(value);
+        return noWhiteSpaceMatcher.find() && !noWhiteSpaceMatcher.group().isEmpty();
     }
 
     @SuppressWarnings("unused")
