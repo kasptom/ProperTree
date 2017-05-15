@@ -6,11 +6,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ReferencesParser {
-    public static List<Address> parse() {
+class ReferencesParser {
+    private static final String REFERENCES_TABLE_PATH = "generated/gen_ref_tab";
+
+    static List<Address> parse() {
         List<Address> addresses = new ArrayList<>();
         try {
-            FileReader fileReader = new FileReader("generated/references_table");
+            FileReader fileReader = new FileReader(REFERENCES_TABLE_PATH);
             BufferedReader buffer = new BufferedReader(fileReader);
 
             String line;

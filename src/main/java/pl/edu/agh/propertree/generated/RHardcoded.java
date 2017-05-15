@@ -1,12 +1,10 @@
 package pl.edu.agh.propertree.generated;
 
-//TODO should be generated
-
 /**
  * In each id is decoded an information about the package, resource type and number
  * 0xPPTTNNNN
  */
-public class R {
+public class RHardcoded {
     public static class strings {
         public static final int name = 0x01010001;
         public static final int nationality = 0x01010002;

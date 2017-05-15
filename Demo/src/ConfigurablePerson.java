@@ -1,5 +1,3 @@
-package pl.edu.agh.propertree.demo;
-
 import pl.edu.agh.propertree.Configurable;
 import pl.edu.agh.propertree.finder.ResourceFinder;
 import pl.edu.agh.propertree.generated.R;
@@ -31,7 +29,7 @@ public class ConfigurablePerson implements Configurable {
         return configPrefix;
     }
 
-    public void printAttributes() {
+    private void printAttributes() {
         System.out.println(String.format(Locale.getDefault(), "name: %s\n" +
                 "nationality: %s\n" +
                 "currency: %s\n" +
