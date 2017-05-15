@@ -43,20 +43,30 @@ public class ResourceFinder {
         return null;
     }
 
-    private static Address findWithPrefixOrDefault(int resourceId, String configPrefix) {
+    private static Address findBestFittingPostfix(int resourceId, String configPrefix) {
         List<Address> filteredAddresses = addresses
                 .stream()
-                .filter(a -> a.getId() == resourceId && Objects.equals(getConfigPrefix(a.getPath()), configPrefix)).distinct().collect(Collectors.toList());
+                .filter(a -> hasCompatiblePostfix())
+                .collect(Collectors.toList());
+
+        filteredAddresses = filteredAddresses
+                .stream()
+                .filter(a -> a.getId() == resourceId && Objects.equals(getConfigPostfix(a.getPath()), configPrefix)).distinct().collect(Collectors.toList());
         if (filteredAddresses.isEmpty()) {
             filteredAddresses = addresses
                     .stream()
-                    .filter(a -> a.getId() == resourceId && Objects.equals(getConfigPrefix(a.getPath()), "")).distinct().collect(Collectors.toList());
+                    .filter(a -> a.getId() == resourceId && Objects.equals(getConfigPostfix(a.getPath()), "")).distinct().collect(Collectors.toList());
         }
         return filteredAddresses.get(0);
     }
 
+    private static boolean hasCompatiblePostfix() {
+        //TODO return false if prefix collides with the given one
+        return true;
+    }
+
     private static Double findDouble(int resourceId, String configPrefix) {
-        Address address = findWithPrefixOrDefault(resourceId, configPrefix);
+        Address address = findBestFittingPostfix(resourceId, configPrefix);
         String stringValue = getValue(address);
 
         if (stringValue == null)
@@ -67,7 +77,7 @@ public class ResourceFinder {
     }
 
     private static Integer findInteger(int resourceId, String configPrefix) {
-        Address address = findWithPrefixOrDefault(resourceId, configPrefix);
+        Address address = findBestFittingPostfix(resourceId, configPrefix);
         String stringValue = getValue(address);
 
         if (stringValue == null)
@@ -78,11 +88,11 @@ public class ResourceFinder {
     }
 
     private static String findString(int resourceId, String configPrefix) {
-        Address address = findWithPrefixOrDefault(resourceId, configPrefix);
+        Address address = findBestFittingPostfix(resourceId, configPrefix);
         return String.valueOf(getValue(address));
     }
 
-    private static String getConfigPrefix(String path) {
+    private static String getConfigPostfix(String path) {
         Matcher matcher = POSTFIX_PATTERN.matcher(path);
 
         if (matcher.find()) {

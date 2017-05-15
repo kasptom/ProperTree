@@ -1,5 +1,7 @@
 package pl.edu.agh.propertree.generator;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
+
 import java.io.*;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -149,14 +151,14 @@ public class AddressGenerator {
     }
 
     private static boolean hasBoolean(String value) {
-        boolean hasInteger = true;
+        boolean hasBoolean = true;
         try {
             //noinspection ResultOfMethodCallIgnored
-            Integer.parseInt(value);
+            Boolean.parseBoolean(value);
         } catch (NumberFormatException e) {
-            hasInteger = false;
+            hasBoolean = false;
         }
-        return hasInteger;
+        return hasBoolean;
     }
 
     public static boolean hasString(String value) {

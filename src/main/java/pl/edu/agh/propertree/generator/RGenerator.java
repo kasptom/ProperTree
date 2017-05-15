@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Class which generates RHardcoded.java on basing on the configuration files
+ * Class which generates R.java on basing on the configuration files
  */
 public class RGenerator {
 
