@@ -1,18 +1,23 @@
 package pl.edu.agh.propertree.generator;
 
 public enum Types {
-    STRINGS("strings"), INTEGERS("integers"), DOUBLES("doubles"),
-
-    STRING_1D_ARRAYS("string_1d_arrays"), INTEGER_1D_ARRAYS("string_1d_arrays"), DOUBLE_1D_ARRAYS("string_1d_arrays"),
-
-    STRING_2D_ARRAYS("string_2d_arrays"), INTEGER_2D_ARRAYS("integer_2d_arrays"), DOUBLE_2D_ARRAYS("string_2d_arrays"),
-
-    BOOLEANS("booleans");
+    STRINGS("strings", 0x01010000),
+    INTEGERS("integers", 0x01020000),
+    DOUBLES("doubles", 0x01030000),
+    STRING_1D_ARRAYS("string_1d_arrays", 0x01040000),
+    INTEGER_1D_ARRAYS("string_1d_arrays", 0x01050000),
+    DOUBLE_1D_ARRAYS("string_1d_arrays", 0x01060000),
+    STRING_2D_ARRAYS("string_2d_arrays", 0x01070000),
+    INTEGER_2D_ARRAYS("integer_2d_arrays", 0x01080000),
+    DOUBLE_2D_ARRAYS("string_2d_arrays", 0x01090000),
+    BOOLEANS("booleans", 0x010A0000);
 
     public final String typeName;
+    public final int typeValue;
 
-    Types(String typeName) {
+    Types(String typeName, int typeValue) {
         this.typeName = typeName;
+        this.typeValue = typeValue;
     }
 
     public static String getTypeName(int resourceId) {

@@ -10,11 +10,13 @@ public class R {
   }
 
   public static class doubles {
-    public static final int weight = 16973825;
-
-    public static final int height = 16973826;
   }
 
   public static class integers {
+    public static final int weight = 16908289;
+
+    public static final int testowePole = 16908291;
+
+    public static final int height = 16908290;
   }
 }

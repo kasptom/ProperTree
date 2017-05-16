@@ -1,7 +1,5 @@
 package pl.edu.agh.propertree.generator;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
-
 import java.io.*;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -184,52 +182,52 @@ public class AddressGenerator {
 
         static Integer nextStringId() {
             stringsCounter++;
-            return 0x01010000 + stringsCounter;
-        }
-
-        static Integer nextDoubleId() {
-            doublesCounter++;
-            return 0x01020000 + doublesCounter;
+            return Types.STRINGS.typeValue + stringsCounter;
         }
 
         static Integer nextIntId() {
             integersCounter++;
-            return 0x01030000 + integersCounter;
+            return Types.INTEGERS.typeValue + integersCounter;
+        }
+
+        static Integer nextDoubleId() {
+            doublesCounter++;
+            return Types.DOUBLES.typeValue + doublesCounter;
         }
 
         static Integer nextString1DArrayId() {
             string1DArraysCounter++;
-            return 0x01040000 + string1DArraysCounter;
-        }
-
-        static Integer nextDouble1DArrayId() {
-            double1DArraysCounter++;
-            return 0x01050000 + double1DArraysCounter;
+            return Types.STRING_1D_ARRAYS.typeValue + string1DArraysCounter;
         }
 
         static Integer nextInteger1DArrayId() {
             integer1DArraysCounter++;
-            return 0x01060000 + integer1DArraysCounter;
+            return Types.INTEGER_1D_ARRAYS.typeValue + integer1DArraysCounter;
+        }
+
+        static Integer nextDouble1DArrayId() {
+            double1DArraysCounter++;
+            return Types.DOUBLE_1D_ARRAYS.typeValue + double1DArraysCounter;
         }
 
         static Integer nextString2DArrayId() {
             string2DArraysCounter++;
-            return 0x01070000 + string2DArraysCounter;
-        }
-
-        static Integer nextDouble2DArrayId() {
-            double2DArraysCounter++;
-            return 0x01080000 + double2DArraysCounter;
+            return Types.STRING_2D_ARRAYS.typeValue + string2DArraysCounter;
         }
 
         static Integer nextInteger2DArrayId() {
             integer2DArraysCounter++;
-            return 0x01090000 + integer2DArraysCounter;
+            return Types.INTEGER_2D_ARRAYS.typeValue + integer2DArraysCounter;
+        }
+
+        static Integer nextDouble2DArrayId() {
+            double2DArraysCounter++;
+            return Types.DOUBLE_2D_ARRAYS.typeValue + double2DArraysCounter;
         }
 
         static Integer nextBooleanId() {
             booleansCounter++;
-            return 0x010A0000 + booleansCounter;
+            return Types.BOOLEANS.typeValue + booleansCounter;
         }
     }
 }

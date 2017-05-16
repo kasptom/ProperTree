@@ -20,8 +20,8 @@ public class ConfigurablePerson implements Configurable {
         nationality = (String) ResourceFinder.getResource(R.strings.nationality, configPrefix);
         currency = (String) ResourceFinder.getResource(R.strings.currency, configPrefix);
 
-        height = (double) ResourceFinder.getResource(R.doubles.height, configPrefix);
-        weight = (double) ResourceFinder.getResource(R.doubles.weight, configPrefix);
+        height = (double) ResourceFinder.getResource(R.integers.height, configPrefix);
+        weight = (double) ResourceFinder.getResource(R.integers.weight, configPrefix);
     }
 
     @Override
