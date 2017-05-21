@@ -8,22 +8,12 @@ import com.squareup.javapoet.TypeSpec;
 import javax.lang.model.element.Modifier;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 
 /**
  * Class which generates R.java on basing on the configuration files
  */
 public class RGenerator {
-
-    public static final List<String> AVAILABLE_TYPES = new ArrayList<>(Arrays.asList(
-            "string", "double", "int",
-            "string[]", "double[]", "int[]",
-            "string[][]", "double[][]", "int[][]",
-            "boolean"
-    ));
 
     public static void generateRClass(Map<String, Integer> scanResult) {
         TypeSpec.Builder resourceClassBuilder = TypeSpec.classBuilder("R")

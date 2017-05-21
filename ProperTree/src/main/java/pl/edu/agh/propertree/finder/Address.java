@@ -1,25 +1,25 @@
 package pl.edu.agh.propertree.finder;
 
-public class Address {
+class Address {
     private int id;
     private String path;
     private int lineNumber;
 
-    public Address(int id, String path, int lineNumber) {
+    Address(int id, String path, int lineNumber) {
         this.id = id;
         this.path = path;
         this.lineNumber = lineNumber;
     }
 
-    public int getId() {
+    int getId() {
         return id;
     }
 
-    public String getPath() {
+    String getPath() {
         return path;
     }
 
-    public int getLineNumber() {
+    int getLineNumber() {
         return lineNumber;
     }
 }

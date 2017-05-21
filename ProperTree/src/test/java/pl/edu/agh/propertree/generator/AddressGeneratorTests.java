@@ -1,3 +1,5 @@
+package pl.edu.agh.propertree.generator;
+
 import org.junit.Test;
 import pl.edu.agh.propertree.generator.AddressGenerator;
 

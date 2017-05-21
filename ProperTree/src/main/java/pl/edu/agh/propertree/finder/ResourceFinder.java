@@ -19,65 +19,65 @@ public class ResourceFinder {
 
     private static List<Address> addresses = ReferencesParser.parse();
 
-    public static Object getResource(int resourceId, String configPrefix) {
+    public static Object getResource(int resourceId, String configPostfix) {
         String resourceType = Types.getTypeName(resourceId);
-        if (resourceType.equals(Types.INTEGERS.typeName)) return findInteger(resourceId, configPrefix);
+        if (resourceType.equals(Types.INTEGERS.typeName)) return findInteger(resourceId, configPostfix);
 
-        if (resourceType.equals(Types.DOUBLES.typeName)) return findDouble(resourceId, configPrefix);
+        if (resourceType.equals(Types.DOUBLES.typeName)) return findDouble(resourceId, configPostfix);
 
-        if (resourceType.equals(Types.BOOLEANS.typeName)) return findBoolean(resourceId, configPrefix);
+        if (resourceType.equals(Types.BOOLEANS.typeName)) return findBoolean(resourceId, configPostfix);
 
-        if (resourceType.equals(Types.STRINGS.typeName)) return findString(resourceId, configPrefix);
+        if (resourceType.equals(Types.STRINGS.typeName)) return findString(resourceId, configPostfix);
 
-        if (resourceType.equals(Types.INTEGER_1D_ARRAYS.typeName)) return findInteger1DArray(resourceId, configPrefix);
+        if (resourceType.equals(Types.INTEGER_1D_ARRAYS.typeName)) return findInteger1DArray(resourceId, configPostfix);
 
-        if (resourceType.equals(Types.DOUBLE_1D_ARRAYS.typeName)) return findDouble1DArray(resourceId, configPrefix);
+        if (resourceType.equals(Types.DOUBLE_1D_ARRAYS.typeName)) return findDouble1DArray(resourceId, configPostfix);
 
         if (resourceType.equals("string[]")) ; /*TODO*/
 
-        if (resourceType.equals(Types.INTEGER_2D_ARRAYS.typeName)) return findInteger2DArray(resourceId, configPrefix);
+        if (resourceType.equals(Types.INTEGER_2D_ARRAYS.typeName)) return findInteger2DArray(resourceId, configPostfix);
 
-        if (resourceType.equals(Types.DOUBLE_2D_ARRAYS.typeName)) return findDouble2DArray(resourceId, configPrefix);
+        if (resourceType.equals(Types.DOUBLE_2D_ARRAYS.typeName)) return findDouble2DArray(resourceId, configPostfix);
 
         if (resourceType.equals("string[][]")) ; /*TODO*/
 
         return null;
     }
 
-    private static Integer findInteger(int resourceId, String configPrefix) {
-        Address address = findBestFittingPostfix(resourceId, configPrefix);
+    private static Integer findInteger(int resourceId, String configPostfix) {
+        Address address = findBestFittingPostfix(resourceId, configPostfix);
         String stringValue = getValue(address);
 
         if (stringValue == null)
             throw new IllegalStateException(String.format("Could not find integer with resource id 0x%s for config prefix %s",
-                    Integer.toHexString(resourceId), configPrefix));
+                    Integer.toHexString(resourceId), configPostfix));
 
         return Integer.valueOf(stringValue);
     }
 
-    private static Double findDouble(int resourceId, String configPrefix) {
-        Address address = findBestFittingPostfix(resourceId, configPrefix);
+    private static Double findDouble(int resourceId, String configPostfix) {
+        Address address = findBestFittingPostfix(resourceId, configPostfix);
         String stringValue = getValue(address);
 
         if (stringValue == null)
             throw new IllegalStateException(String.format("Could not find double with resource id 0x%s for config prefix %s",
-                    Integer.toHexString(resourceId), configPrefix));
+                    Integer.toHexString(resourceId), configPostfix));
 
         return Double.valueOf(stringValue);
     }
 
-    private static Boolean findBoolean(int resourceId, String configPrefix) {
-        Address address = findBestFittingPostfix(resourceId, configPrefix);
+    private static Boolean findBoolean(int resourceId, String configPostfix) {
+        Address address = findBestFittingPostfix(resourceId, configPostfix);
         return Boolean.parseBoolean(getValue(address));
     }
 
-    private static String findString(int resourceId, String configPrefix) {
-        Address address = findBestFittingPostfix(resourceId, configPrefix);
+    private static String findString(int resourceId, String configPostfix) {
+        Address address = findBestFittingPostfix(resourceId, configPostfix);
         return String.valueOf(getValue(address));
     }
 
-    private static Integer[] findInteger1DArray(int resourceId, String configPrefix) {
-        Address address = findBestFittingPostfix(resourceId, configPrefix);
+    private static Integer[] findInteger1DArray(int resourceId, String configPostfix) {
+        Address address = findBestFittingPostfix(resourceId, configPostfix);
         String[] rowStr = get1DArrayValues(address);
         Integer[] row = new Integer[rowStr.length];
 
@@ -87,8 +87,8 @@ public class ResourceFinder {
         return row;
     }
 
-    private static Double[] findDouble1DArray(int resourceId, String configPrefix) {
-        Address address = findBestFittingPostfix(resourceId, configPrefix);
+    private static Double[] findDouble1DArray(int resourceId, String configPostfix) {
+        Address address = findBestFittingPostfix(resourceId, configPostfix);
         String[] rowStr = get1DArrayValues(address);
         Double[] row = new Double[rowStr.length];
 
@@ -98,8 +98,8 @@ public class ResourceFinder {
         return row;
     }
 
-    private static Integer[][] findInteger2DArray(int resourceId, String configPrefix) {
-        Address address = findBestFittingPostfix(resourceId, configPrefix);
+    private static Integer[][] findInteger2DArray(int resourceId, String configPostfix) {
+        Address address = findBestFittingPostfix(resourceId, configPostfix);
         String[][] rowsStr = get2DArrayValues(address);
         Integer[][] rows = new Integer[rowsStr.length][rowsStr[0].length];
 
@@ -111,8 +111,8 @@ public class ResourceFinder {
         return rows;
     }
 
-    private static Double[][] findDouble2DArray(int resourceId, String configPrefix) {
-        Address address = findBestFittingPostfix(resourceId, configPrefix);
+    private static Double[][] findDouble2DArray(int resourceId, String configPostfix) {
+        Address address = findBestFittingPostfix(resourceId, configPostfix);
         String[][] rowsStr = get2DArrayValues(address);
         Double[][] rows = new Double[rowsStr.length][rowsStr[0].length];
 

@@ -1,12 +1,9 @@
-import pl.edu.agh.propertree.Configurable;
 import pl.edu.agh.propertree.finder.ResourceFinder;
 import pl.edu.agh.propertree.generated.R;
 
 import java.util.Locale;
 
-public class ConfigurablePerson implements Configurable {
-
-    private final String configPrefix;
+public class ConfigurablePerson {
 
     private String name;
     private String nationality;
@@ -15,18 +12,12 @@ public class ConfigurablePerson implements Configurable {
     private double weight;
 
     private ConfigurablePerson(String configPrefix) {
-        this.configPrefix = configPrefix;
         name = (String) ResourceFinder.getResource(R.strings.name, configPrefix);
         nationality = (String) ResourceFinder.getResource(R.strings.nationality, configPrefix);
         currency = (String) ResourceFinder.getResource(R.strings.currency, configPrefix);
 
         height = (int) ResourceFinder.getResource(R.integers.height, configPrefix);
         weight = (int) ResourceFinder.getResource(R.integers.weight, configPrefix);
-    }
-
-    @Override
-    public String getConfigurationType() {
-        return configPrefix;
     }
 
     private void printAttributes() {
