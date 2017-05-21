@@ -1,7 +1,6 @@
 package pl.edu.agh.propertree.generator;
 
 import java.io.*;
-import java.text.ParseException;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -67,7 +66,7 @@ public class AddressGenerator {
             if (matcher.find()) { // key = value
                 String name = matcher.group(1);
                 String value = matcher.group(3).trim();
-                System.out.println(String.format("FOUND: %s %s", name, value));
+//                System.out.println(String.format("FOUND: %s %s", name, value));
                 addConfigEntry(name, value, filePath, lineNumber, scanResult);
                 continue;
             }
@@ -81,16 +80,18 @@ public class AddressGenerator {
             StringBuilder value = new StringBuilder(matcher.group(3).trim());
 
             //check if it has other dimensions
-            while (nextRowIsMatrix(bufferedReader)) {
-                System.out.println("NEXT MATRIX ROW");
+            int tmpLine = lineNumber;
+            while (isNextRowMatrix(bufferedReader)) {
+                lineNumber++;
+//                System.out.println("NEXT MATRIX ROW");
                 value.append(",").append(bufferedReader.readLine().trim());
             }
 
-            addConfigEntry(name, value.toString(), filePath, lineNumber, scanResult);
+            addConfigEntry(name, value.toString(), filePath, tmpLine, scanResult);
         }
     }
 
-    private static boolean nextRowIsMatrix(BufferedReader bufferedReader) throws IOException {
+    private static boolean isNextRowMatrix(BufferedReader bufferedReader) throws IOException {
         int READ_AHEAD_LIMIT = 1;
         String nextLine;
         bufferedReader.mark(READ_AHEAD_LIMIT);
@@ -118,6 +119,7 @@ public class AddressGenerator {
             if (scanResult.containsKey(name)) {
                 id = scanResult.get(name);
                 writeReferenceLine(filePath, lineNumber, fileWriter, id);
+                fileWriter.close();
                 return;
             }
             if (hasInteger(value)) {

@@ -20,8 +20,8 @@ public class ConfigurablePerson implements Configurable {
         nationality = (String) ResourceFinder.getResource(R.strings.nationality, configPrefix);
         currency = (String) ResourceFinder.getResource(R.strings.currency, configPrefix);
 
-        height = (double) ResourceFinder.getResource(R.integers.height, configPrefix);
-        weight = (double) ResourceFinder.getResource(R.integers.weight, configPrefix);
+        height = (int) ResourceFinder.getResource(R.integers.height, configPrefix);
+        weight = (int) ResourceFinder.getResource(R.integers.weight, configPrefix);
     }
 
     @Override
@@ -43,5 +43,10 @@ public class ConfigurablePerson implements Configurable {
 
         english.printAttributes();
         polish.printAttributes();
+
+        Integer[] otherArray = (Integer[])ResourceFinder.getResource(R.integer1DArrays.otherArray, "en");
+        System.out.println(otherArray);
+        Integer[][] testIntegerArray = (Integer[][]) ResourceFinder.getResource(R.integer2DArrays.testIntegerArray, "en");
+        System.out.println(testIntegerArray);
     }
 }
