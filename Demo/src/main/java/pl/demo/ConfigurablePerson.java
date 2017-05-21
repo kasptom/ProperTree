@@ -1,3 +1,5 @@
+package pl.demo;
+
 import pl.edu.agh.propertree.finder.ResourceFinder;
 import pl.edu.agh.propertree.generated.R;
 
