@@ -1,6 +1,7 @@
 package pl.edu.agh.propertree.generator;
 
 import java.io.*;
+import java.text.ParseException;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -10,10 +11,16 @@ public class AddressGenerator {
     private static final String GENERATED_REFERENCES_TABLE_PATH = "generated/gen_ref_tab";
     public static final File CONFIG_ROOT = new File(CONFIG_ROOT_PATH);
 
-    private static final String KEY_EQUALS_VALUE_REGEX = "([\\p{Print}&&\\S]+)([\\s]+=[\\s]+)([\\p{Print}]+)";
-    private static final String NO_WHITESPACES_REGEX = "[\\p{Print}&&\\S]+";
+    private static final String KEY_EQUALS_VALUE_REGEX =
+            "(^[\\p{Print}&&\\S&&[^=]]+)([\\s]+=[\\s]+)([\\p{Print}&&\\S&&[^=]]+)([\\s]*)($|\\n)";
+    private static final String KEY_EQUALS_MATRIX_REGEX = "(^[\\p{Print}&&\\S&&[^=]]+)([\\s]*=[\\s]*)([\\p{Print}&&[^=]]+)([\\s]*)($|\\n)";
+    private static final String NO_WHITESPACES_REGEX = "(^)([\\s]*)([\\p{Print}&&\\S]+)([\\s]*)($|\\n)";
+    private static final String MATRIX_ROW_REGEX = "(^)([\\s]*)([\\p{Print}&&[^=]]+)([\\s]*)($|\\n)";
+
     private static final Pattern KEY_EQUALS_VALUE_PATTERN = Pattern.compile(KEY_EQUALS_VALUE_REGEX);
     private static final Pattern NO_WHITESPACES_PATTERN = Pattern.compile(NO_WHITESPACES_REGEX);
+    private static final Pattern KEY_EQUALS_MATRIX_PATTERN = Pattern.compile(KEY_EQUALS_MATRIX_REGEX);
+    private static final Pattern MATRIX_ROW_PATTERN = Pattern.compile(MATRIX_ROW_REGEX);
 
     static {
         prepareReferenceTableFile();
@@ -55,23 +62,46 @@ public class AddressGenerator {
         int lineNumber = 0;
         while ((line = bufferedReader.readLine()) != null) {
             lineNumber++;
-            matcher = KEY_EQUALS_VALUE_PATTERN.matcher(line);
 
-            if (!matcher.find()) {
+            matcher = KEY_EQUALS_VALUE_PATTERN.matcher(line);
+            if (matcher.find()) { // key = value
+                String name = matcher.group(1);
+                String value = matcher.group(3).trim();
+                System.out.println(String.format("FOUND: %s %s", name, value));
+                addConfigEntry(name, value, filePath, lineNumber, scanResult);
                 continue;
             }
 
-            String name = matcher.group(1);
-            String value = matcher.group(3).trim();
-//            System.out.println(String.format("FOUND: %s %s", name, value));
-            /*
-            while (matcher.find()) {
-                 //TODO use it for arrays
+            //check if it is not a matrix
+            matcher = KEY_EQUALS_MATRIX_PATTERN.matcher(line);
+            if (!matcher.find()) {
+                continue;
             }
-            */
+            String name = matcher.group(1);
+            StringBuilder value = new StringBuilder(matcher.group(3).trim());
 
-            addConfigEntry(name, value, filePath, lineNumber, scanResult);
+            //check if it has other dimensions
+            while (nextRowIsMatrix(bufferedReader)) {
+                System.out.println("NEXT MATRIX ROW");
+                value.append(",").append(bufferedReader.readLine().trim());
+            }
+
+            addConfigEntry(name, value.toString(), filePath, lineNumber, scanResult);
         }
+    }
+
+    private static boolean nextRowIsMatrix(BufferedReader bufferedReader) throws IOException {
+        int READ_AHEAD_LIMIT = 1;
+        String nextLine;
+        bufferedReader.mark(READ_AHEAD_LIMIT);
+
+        if ((nextLine = bufferedReader.readLine()) != null) {
+            bufferedReader.reset();
+            Matcher matcher = MATRIX_ROW_PATTERN.matcher(nextLine);
+            return matcher.find() && !matcher.group(3).isEmpty();
+        }
+
+        return false;
     }
 
     private static boolean prepareReferenceTableFile() {
@@ -111,7 +141,7 @@ public class AddressGenerator {
             } else if (hasString2DArray(value)) {
                 id = EntryIdFactory.nextString2DArrayId();
             } else {
-                throw new IllegalStateException(String.format("Could not parse data from config file: %s", filePath));
+                throw new IllegalStateException(String.format("Could not parse data from config file: %s, line: %d", filePath, lineNumber));
             }
 
             scanResult.put(name, id);
@@ -157,12 +187,24 @@ public class AddressGenerator {
 
     private static boolean hasString(String value) {
         Matcher noWhiteSpaceMatcher = NO_WHITESPACES_PATTERN.matcher(value);
-        return noWhiteSpaceMatcher.find() && !noWhiteSpaceMatcher.group().isEmpty();
+        return noWhiteSpaceMatcher.find() && !noWhiteSpaceMatcher.group(3).isEmpty();
     }
 
     private static boolean hasInteger1DArray(String value) {
-        //TODO check input
-        return false;
+        boolean hasInteger1DArray = true;
+        if (value.contains(","))
+            return false;
+        String[] values = value.split("\\s");
+        try {
+            for (String val : values) {
+                //noinspection ResultOfMethodCallIgnored
+                Integer.parseInt(val);
+            }
+        } catch (NumberFormatException e) {
+            hasInteger1DArray = false;
+        }
+
+        return hasInteger1DArray;
     }
 
     private static boolean hasDouble1DArray(String value) {
@@ -176,8 +218,23 @@ public class AddressGenerator {
     }
 
     private static boolean hasInteger2DArray(String value) {
-        //TODO check input
-        return false;
+        boolean hasInteger2DArray = true;
+        if (!value.contains(","))
+            return false;
+        String[] rows = value.split(",");
+        try {
+            for (String row : rows) {
+                String[] values = row.split("\\s");
+                for (String val : values) {
+                    //noinspection ResultOfMethodCallIgnored
+                    Integer.parseInt(val);
+                }
+            }
+        } catch (NumberFormatException e) {
+            hasInteger2DArray = false;
+        }
+
+        return hasInteger2DArray;
     }
 
     private static boolean hasDouble2DArray(String value) {
