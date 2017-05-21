@@ -30,6 +30,7 @@ public class R {
   }
 
   public static class double1DArrays {
+    public static final int oneDimDoubleArray = 17170433;
   }
 
   public static class string1DArrays {
@@ -40,6 +41,7 @@ public class R {
   }
 
   public static class double2DArrays {
+    public static final int twoDimDoubleArray = 17367041;
   }
 
   public static class string2DArrays {

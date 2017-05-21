@@ -2,6 +2,8 @@
 0x1040002;configuration/config-pl/strings;2
 0x1010001;configuration/config-pl/integers;1
 0x1040001;configuration/config-en/strings;1
+0x1090001;configuration/config-en/doubles;1
+0x1060001;configuration/config-en/doubles;4
 0x1010002;configuration/config-en/integers;1
 0x1040003;configuration/config/strings;1
 0x1040001;configuration/config/strings;2

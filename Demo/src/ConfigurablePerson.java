@@ -44,9 +44,19 @@ public class ConfigurablePerson implements Configurable {
         english.printAttributes();
         polish.printAttributes();
 
-        Integer[] otherArray = (Integer[])ResourceFinder.getResource(R.integer1DArrays.otherArray, "en");
-        System.out.println(otherArray);
-        Integer[][] testIntegerArray = (Integer[][]) ResourceFinder.getResource(R.integer2DArrays.testIntegerArray, "en");
-        System.out.println(testIntegerArray);
+        Integer[] otherArray = (Integer[]) ResourceFinder.getResource(R.integer1DArrays.otherArray, "");
+        assert otherArray != null;
+        System.out.println(otherArray[0]);
+        Integer[][] testIntegerArray = (Integer[][]) ResourceFinder.getResource(R.integer2DArrays.testIntegerArray, "");
+        assert testIntegerArray != null;
+        System.out.println(testIntegerArray[0][0]);
+
+        Double[] oneDimDoubleArray = (Double[]) ResourceFinder.getResource(R.double1DArrays.oneDimDoubleArray, "en");
+        Double[][] twoDimDoubleArray = (Double[][]) ResourceFinder.getResource(R.double2DArrays.twoDimDoubleArray, "en");
+
+        assert oneDimDoubleArray != null;
+        System.out.println(oneDimDoubleArray[3]);
+        assert twoDimDoubleArray != null;
+        System.out.println(twoDimDoubleArray[0][2]);
     }
 }

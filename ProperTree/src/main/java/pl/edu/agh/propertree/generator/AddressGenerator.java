@@ -97,10 +97,11 @@ public class AddressGenerator {
         bufferedReader.mark(READ_AHEAD_LIMIT);
 
         if ((nextLine = bufferedReader.readLine()) != null) {
-            bufferedReader.reset();
             Matcher matcher = MATRIX_ROW_PATTERN.matcher(nextLine);
+            bufferedReader.reset();
             return matcher.find() && !matcher.group(3).isEmpty();
         }
+        bufferedReader.reset();
 
         return false;
     }
@@ -210,8 +211,20 @@ public class AddressGenerator {
     }
 
     private static boolean hasDouble1DArray(String value) {
-        //TODO check input
-        return false;
+        boolean hasDouble1DArray = true;
+        if (value.contains(","))
+            return false;
+        String[] values = value.split("\\s");
+        try {
+            for (String val : values) {
+                //noinspection ResultOfMethodCallIgnored
+                Double.parseDouble(val);
+            }
+        } catch (NumberFormatException e) {
+            hasDouble1DArray = false;
+        }
+
+        return hasDouble1DArray;
     }
 
     private static boolean hasString1DArray(String value) {
@@ -240,8 +253,23 @@ public class AddressGenerator {
     }
 
     private static boolean hasDouble2DArray(String value) {
-        //TODO check input
-        return false;
+        boolean hasDouble2DArray = true;
+        if (!value.contains(","))
+            return false;
+        String[] rows = value.split(",");
+        try {
+            for (String row : rows) {
+                String[] values = row.split("\\s");
+                for (String val : values) {
+                    //noinspection ResultOfMethodCallIgnored
+                    Double.parseDouble(val);
+                }
+            }
+        } catch (NumberFormatException e) {
+            hasDouble2DArray = false;
+        }
+
+        return hasDouble2DArray;
     }
 
     private static boolean hasString2DArray(String value) {

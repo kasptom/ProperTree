@@ -31,15 +31,15 @@ public class ResourceFinder {
 
         if (resourceType.equals(Types.INTEGER_1D_ARRAYS.typeName)) return findInteger1DArray(resourceId, configPrefix);
 
-        if (resourceType.equals("double[]")) {/*TODO*/}
+        if (resourceType.equals(Types.DOUBLE_1D_ARRAYS.typeName)) return findDouble1DArray(resourceId, configPrefix);
 
-        if (resourceType.equals("string[]")) {/*TODO*/}
+        if (resourceType.equals("string[]")) ; /*TODO*/
 
         if (resourceType.equals(Types.INTEGER_2D_ARRAYS.typeName)) return findInteger2DArray(resourceId, configPrefix);
 
-        if (resourceType.equals("double[][]")) {/*TODO*/}
+        if (resourceType.equals(Types.DOUBLE_2D_ARRAYS.typeName)) return findDouble2DArray(resourceId, configPrefix);
 
-        if (resourceType.equals("string[][]")) {/*TODO*/}
+        if (resourceType.equals("string[][]")) ; /*TODO*/
 
         return null;
     }
@@ -81,8 +81,19 @@ public class ResourceFinder {
         String[] rowStr = get1DArrayValues(address);
         Integer[] row = new Integer[rowStr.length];
 
-        for(int i = 0; i<row.length; i++) {
+        for (int i = 0; i < row.length; i++) {
             row[i] = Integer.parseInt(rowStr[i]);
+        }
+        return row;
+    }
+
+    private static Double[] findDouble1DArray(int resourceId, String configPrefix) {
+        Address address = findBestFittingPostfix(resourceId, configPrefix);
+        String[] rowStr = get1DArrayValues(address);
+        Double[] row = new Double[rowStr.length];
+
+        for (int i = 0; i < row.length; i++) {
+            row[i] = Double.parseDouble(rowStr[i]);
         }
         return row;
     }
@@ -92,9 +103,22 @@ public class ResourceFinder {
         String[][] rowsStr = get2DArrayValues(address);
         Integer[][] rows = new Integer[rowsStr.length][rowsStr[0].length];
 
-        for(int i = 0; i<rows.length; i++) {
-            for (int j=0; j<rows[0].length; j++) {
+        for (int i = 0; i < rows.length; i++) {
+            for (int j = 0; j < rows[0].length; j++) {
                 rows[i][j] = Integer.parseInt(rowsStr[i][j]);
+            }
+        }
+        return rows;
+    }
+
+    private static Double[][] findDouble2DArray(int resourceId, String configPrefix) {
+        Address address = findBestFittingPostfix(resourceId, configPrefix);
+        String[][] rowsStr = get2DArrayValues(address);
+        Double[][] rows = new Double[rowsStr.length][rowsStr[0].length];
+
+        for (int i = 0; i < rows.length; i++) {
+            for (int j = 0; j < rows[0].length; j++) {
+                rows[i][j] = Double.parseDouble(rowsStr[i][j]);
             }
         }
         return rows;

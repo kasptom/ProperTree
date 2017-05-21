@@ -5,11 +5,11 @@ public enum Types {
     DOUBLES("doubles", 0x01020000),
     BOOLEANS("booleans", 0x01030000),
     STRINGS("strings", 0x01040000),
-    INTEGER_1D_ARRAYS("string_1d_arrays", 0x01050000),
-    DOUBLE_1D_ARRAYS("string_1d_arrays", 0x01060000),
+    INTEGER_1D_ARRAYS("integer_1d_arrays", 0x01050000),
+    DOUBLE_1D_ARRAYS("double_1d_arrays", 0x01060000),
     STRING_1D_ARRAYS("string_1d_arrays", 0x01070000),
     INTEGER_2D_ARRAYS("integer_2d_arrays", 0x01080000),
-    DOUBLE_2D_ARRAYS("string_2d_arrays", 0x01090000),
+    DOUBLE_2D_ARRAYS("double_2d_arrays", 0x01090000),
     STRING_2D_ARRAYS("string_2d_arrays", 0x010A0000);
 
     public final String typeName;
