@@ -29,41 +29,73 @@ public class RGenerator {
         TypeSpec.Builder resourceClassBuilder = TypeSpec.classBuilder("R")
                 .addModifiers(Modifier.PUBLIC);
 
-        TypeSpec.Builder stringSubclassBuilder = createSubclassBuilder("strings");
-        TypeSpec.Builder doublesSubclassBuilder = createSubclassBuilder("doubles");
         TypeSpec.Builder integersSubclassBuilder = createSubclassBuilder("integers");
+        TypeSpec.Builder doublesSubclassBuilder = createSubclassBuilder("doubles");
+        TypeSpec.Builder booleansSubclassBuilder = createSubclassBuilder("booleans");
+        TypeSpec.Builder stringSubclassBuilder = createSubclassBuilder("strings");
 
-//                .addType(TypeSpec.classBuilder("strings")
-//                        .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
-//                        .build())
+        TypeSpec.Builder integer1DArraysBuilder = createSubclassBuilder("integer1DArrays");
+        TypeSpec.Builder double1DArraysBuilder = createSubclassBuilder("double1DArrays");
+        TypeSpec.Builder string1DArraysBuilder = createSubclassBuilder("string1DArrays");
+
+        TypeSpec.Builder integer2DArraysBuilder = createSubclassBuilder("integer2DArrays");
+        TypeSpec.Builder double2DArraysBuilder = createSubclassBuilder("double2DArrays");
+        TypeSpec.Builder string2DArraysBuilder = createSubclassBuilder("string2DArrays");
+
         for (String key : scanResult.keySet()) {
             Integer id = scanResult.get(key);
             Types type = Types.getType(id);
             TypeSpec.Builder chosenBuilder = null;
 
             switch (type) {
-                case STRINGS:
-                    chosenBuilder = stringSubclassBuilder;
+                case INTEGERS:
+                    chosenBuilder = integersSubclassBuilder;
                     break;
                 case DOUBLES:
                     chosenBuilder = doublesSubclassBuilder;
                     break;
-                case INTEGERS:
-                    chosenBuilder = integersSubclassBuilder;
+                case BOOLEANS:
+                    chosenBuilder = booleansSubclassBuilder;
+                    break;
+                case STRINGS:
+                    chosenBuilder = stringSubclassBuilder;
+                    break;
+                case INTEGER_1D_ARRAYS:
+                    chosenBuilder = integer1DArraysBuilder;
+                    break;
+                case DOUBLE_1D_ARRAYS:
+                    chosenBuilder = double1DArraysBuilder;
+                    break;
+                case STRING_1D_ARRAYS:
+                    chosenBuilder = string1DArraysBuilder;
+                    break;
+                case INTEGER_2D_ARRAYS:
+                    chosenBuilder = integer2DArraysBuilder;
+                    break;
+                case DOUBLE_2D_ARRAYS:
+                    chosenBuilder = double2DArraysBuilder;
+                    break;
+                case STRING_2D_ARRAYS:
+                    chosenBuilder = string2DArraysBuilder;
                     break;
             }
-            if (chosenBuilder != null) {
-                chosenBuilder.addField(FieldSpec
-                        .builder(TypeName.INT, key, Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
-                        .initializer("$L", id)
-                        .build());
-            }
+            chosenBuilder.addField(FieldSpec
+                    .builder(TypeName.INT, key, Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
+                    .initializer("$L", id)
+                    .build());
         }
 
         TypeSpec resourceClass = resourceClassBuilder
-                .addType(stringSubclassBuilder.build())
-                .addType(doublesSubclassBuilder.build())
                 .addType(integersSubclassBuilder.build())
+                .addType(doublesSubclassBuilder.build())
+                .addType(booleansSubclassBuilder.build())
+                .addType(stringSubclassBuilder.build())
+                .addType(integer1DArraysBuilder.build())
+                .addType(double1DArraysBuilder.build())
+                .addType(string1DArraysBuilder.build())
+                .addType(integer2DArraysBuilder.build())
+                .addType(double2DArraysBuilder.build())
+                .addType(string2DArraysBuilder.build())
                 .build();
 
         JavaFile javaFile = JavaFile.builder("pl.edu.agh.propertree.generated", resourceClass)

@@ -10,9 +10,9 @@ public class AddressGenerator {
     private static final String GENERATED_REFERENCES_TABLE_PATH = "generated/gen_ref_tab";
     public static final File CONFIG_ROOT = new File(CONFIG_ROOT_PATH);
 
-    private static final String PROPER_LINE_REGEX = "([\\p{Print}&&\\S]+)([\\s]+=[\\s]+)([\\p{Print}]+)";
+    private static final String KEY_EQUALS_VALUE_REGEX = "([\\p{Print}&&\\S]+)([\\s]+=[\\s]+)([\\p{Print}]+)";
     private static final String NO_WHITESPACES_REGEX = "[\\p{Print}&&\\S]+";
-    private static final Pattern PROPER_LINE_PATTERN = Pattern.compile(PROPER_LINE_REGEX);
+    private static final Pattern KEY_EQUALS_VALUE_PATTERN = Pattern.compile(KEY_EQUALS_VALUE_REGEX);
     private static final Pattern NO_WHITESPACES_PATTERN = Pattern.compile(NO_WHITESPACES_REGEX);
 
     static {
@@ -55,14 +55,15 @@ public class AddressGenerator {
         int lineNumber = 0;
         while ((line = bufferedReader.readLine()) != null) {
             lineNumber++;
-            matcher = PROPER_LINE_PATTERN.matcher(line);
+            matcher = KEY_EQUALS_VALUE_PATTERN.matcher(line);
 
             if (!matcher.find()) {
-                return;
+                continue;
             }
 
             String name = matcher.group(1);
             String value = matcher.group(3).trim();
+//            System.out.println(String.format("FOUND: %s %s", name, value));
             /*
             while (matcher.find()) {
                  //TODO use it for arrays
@@ -84,35 +85,37 @@ public class AddressGenerator {
         try {
             fileWriter = new FileWriter(GENERATED_REFERENCES_TABLE_PATH, true);
             Integer id;
+            if (scanResult.containsKey(name)) {
+                id = scanResult.get(name);
+                writeReferenceLine(filePath, lineNumber, fileWriter, id);
+                return;
+            }
             if (hasInteger(value)) {
-                if (scanResult.containsKey(name)) {
-                    id = scanResult.get(name);
-                } else {
-                    id = EntryIdFactory.nextIntId();
-                    scanResult.put(name, id);
-                }
-
-                writeReferenceLine(filePath, lineNumber, fileWriter, id);
+                id = EntryIdFactory.nextIntId();
             } else if (hasDouble(value)) {
-                if (scanResult.containsKey(name)) {
-                    id = scanResult.get(name);
-                } else {
-                    id = EntryIdFactory.nextDoubleId();
-                    scanResult.put(name, id);
-                }
-
-                writeReferenceLine(filePath, lineNumber, fileWriter, id);
+                id = EntryIdFactory.nextDoubleId();
+            } else if (hasBoolean(value)) {
+                id = EntryIdFactory.nextBooleanId();
             } else if (hasString(value)) {
-                if (scanResult.containsKey(name)) {
-                    id = scanResult.get(name);
-                } else {
-                    id = EntryIdFactory.nextStringId();
-                    scanResult.put(name, id);
-                }
-
-                writeReferenceLine(filePath, lineNumber, fileWriter, id);
+                id = EntryIdFactory.nextStringId();
+            } else if (hasInteger1DArray(value)) {
+                id = EntryIdFactory.nextInteger1DArrayId();
+            } else if (hasDouble1DArray(value)) {
+                id = EntryIdFactory.nextDouble1DArrayId();
+            } else if (hasString1DArray(value)) {
+                id = EntryIdFactory.nextString1DArrayId();
+            } else if (hasInteger2DArray(value)) {
+                id = EntryIdFactory.nextInteger2DArrayId();
+            } else if (hasDouble2DArray(value)) {
+                id = EntryIdFactory.nextDouble2DArrayId();
+            } else if (hasString2DArray(value)) {
+                id = EntryIdFactory.nextString2DArrayId();
+            } else {
+                throw new IllegalStateException(String.format("Could not parse data from config file: %s", filePath));
             }
 
+            scanResult.put(name, id);
+            writeReferenceLine(filePath, lineNumber, fileWriter, id);
 
             fileWriter.close();
         } catch (IOException e) {
@@ -137,7 +140,7 @@ public class AddressGenerator {
         return hasInteger;
     }
 
-    public static boolean hasDouble(String value) {
+    private static boolean hasDouble(String value) {
         boolean hasDouble = true;
         try {
             //noinspection ResultOfMethodCallIgnored
@@ -149,22 +152,44 @@ public class AddressGenerator {
     }
 
     private static boolean hasBoolean(String value) {
-        boolean hasBoolean = true;
-        try {
-            //noinspection ResultOfMethodCallIgnored
-            Boolean.parseBoolean(value);
-        } catch (NumberFormatException e) {
-            hasBoolean = false;
-        }
-        return hasBoolean;
+        return value.equalsIgnoreCase("true") || value.equalsIgnoreCase("false");
     }
 
-    public static boolean hasString(String value) {
+    private static boolean hasString(String value) {
         Matcher noWhiteSpaceMatcher = NO_WHITESPACES_PATTERN.matcher(value);
         return noWhiteSpaceMatcher.find() && !noWhiteSpaceMatcher.group().isEmpty();
     }
 
-    @SuppressWarnings("unused")
+    private static boolean hasInteger1DArray(String value) {
+        //TODO check input
+        return false;
+    }
+
+    private static boolean hasDouble1DArray(String value) {
+        //TODO check input
+        return false;
+    }
+
+    private static boolean hasString1DArray(String value) {
+        //TODO check input
+        return false;
+    }
+
+    private static boolean hasInteger2DArray(String value) {
+        //TODO check input
+        return false;
+    }
+
+    private static boolean hasDouble2DArray(String value) {
+        //TODO check input
+        return false;
+    }
+
+    private static boolean hasString2DArray(String value) {
+        //TODO check input
+        return false;
+    }
+
     static class EntryIdFactory {
         private static int stringsCounter = 0;
         private static int doublesCounter = 0;
@@ -180,11 +205,6 @@ public class AddressGenerator {
 
         private static int booleansCounter = 0;
 
-        static Integer nextStringId() {
-            stringsCounter++;
-            return Types.STRINGS.typeValue + stringsCounter;
-        }
-
         static Integer nextIntId() {
             integersCounter++;
             return Types.INTEGERS.typeValue + integersCounter;
@@ -195,9 +215,14 @@ public class AddressGenerator {
             return Types.DOUBLES.typeValue + doublesCounter;
         }
 
-        static Integer nextString1DArrayId() {
-            string1DArraysCounter++;
-            return Types.STRING_1D_ARRAYS.typeValue + string1DArraysCounter;
+        static Integer nextBooleanId() {
+            booleansCounter++;
+            return Types.BOOLEANS.typeValue + booleansCounter;
+        }
+
+        static Integer nextStringId() {
+            stringsCounter++;
+            return Types.STRINGS.typeValue + stringsCounter;
         }
 
         static Integer nextInteger1DArrayId() {
@@ -210,9 +235,9 @@ public class AddressGenerator {
             return Types.DOUBLE_1D_ARRAYS.typeValue + double1DArraysCounter;
         }
 
-        static Integer nextString2DArrayId() {
-            string2DArraysCounter++;
-            return Types.STRING_2D_ARRAYS.typeValue + string2DArraysCounter;
+        static Integer nextString1DArrayId() {
+            string1DArraysCounter++;
+            return Types.STRING_1D_ARRAYS.typeValue + string1DArraysCounter;
         }
 
         static Integer nextInteger2DArrayId() {
@@ -225,9 +250,9 @@ public class AddressGenerator {
             return Types.DOUBLE_2D_ARRAYS.typeValue + double2DArraysCounter;
         }
 
-        static Integer nextBooleanId() {
-            booleansCounter++;
-            return Types.BOOLEANS.typeValue + booleansCounter;
+        static Integer nextString2DArrayId() {
+            string2DArraysCounter++;
+            return Types.STRING_2D_ARRAYS.typeValue + string2DArraysCounter;
         }
     }
 }
