@@ -1,11 +1,13 @@
 package pl.edu.agh.propertree.generator;
 
+import org.apache.maven.plugin.AbstractMojo;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class ProperTree {
+public abstract class ProperTree extends AbstractMojo {
 
     public static void main(String[] args) {
         Map<String, Integer> scanResult = new HashMap<>();
