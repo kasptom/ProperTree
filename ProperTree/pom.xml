@@ -30,10 +30,6 @@
                         </goals>
                     </execution>
                 </executions>
-                <configuration>
-                    <mainClass>pl.edu.agh.propertree.generator.ProperTree</mainClass>
-                    <executable>maven</executable>
-                </configuration>
             </plugin>
         </plugins>
     </build>

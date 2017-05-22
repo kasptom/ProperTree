@@ -7,12 +7,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 class ReferencesParser {
-    private static final String REFERENCES_TABLE_PATH = "generated/gen_ref_tab";
 
-    static List<Address> parse() {
+    static List<Address> parse(String referencesTablePath) {
         List<Address> addresses = new ArrayList<>();
         try {
-            FileReader fileReader = new FileReader(REFERENCES_TABLE_PATH);
+            FileReader fileReader = new FileReader(referencesTablePath);
             BufferedReader buffer = new BufferedReader(fileReader);
 
             String line;

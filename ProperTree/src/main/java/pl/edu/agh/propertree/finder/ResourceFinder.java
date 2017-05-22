@@ -16,8 +16,11 @@ public class ResourceFinder {
 
     private static final String POSTFIX_REGEX = "(-)([\\p{Print}&&[^-]]+)/[\\p{Print}&&[^/]]+$";
     private static final Pattern POSTFIX_PATTERN = Pattern.compile(POSTFIX_REGEX);
+    private static List<Address> addresses;
 
-    private static List<Address> addresses = ReferencesParser.parse();
+    public static void setReferencesPath(String referencesPath) {
+        addresses = ReferencesParser.parse(referencesPath);
+    }
 
     public static Object getResource(int resourceId, String configPostfix) {
         String resourceType = Types.getTypeName(resourceId);
@@ -157,12 +160,12 @@ public class ResourceFinder {
     }
 
     @SuppressWarnings("unused")
-    private static int getFieldPosition(int resourceId) {
+    private int getFieldPosition(int resourceId) {
         return resourceId & 0x0000FFFF;
     }
 
     @SuppressWarnings("unused")
-    private static int getPackageIndex(int resourceId) {
+    private int getPackageIndex(int resourceId) {
         return (resourceId & 0xFF000000) >> 24;
     }
 

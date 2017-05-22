@@ -6,8 +6,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 class AddressGenerator {
-    private static final String GENERATED_REFERENCES_TABLE_PATH = "generated/gen_ref_tab";
-
     private static final String KEY_EQUALS_VALUE_REGEX =
             "(^[\\p{Print}&&\\S&&[^=]]+)([\\s]+=[\\s]+)([\\p{Print}&&\\S&&[^=]]+)([\\s]*)($|\\n)";
     private static final String KEY_EQUALS_MATRIX_REGEX = "(^[\\p{Print}&&\\S&&[^=]]+)([\\s]*=[\\s]*)([\\p{Print}&&[^=]]+)([\\s]*)($|\\n)";
@@ -19,20 +17,22 @@ class AddressGenerator {
     private static final Pattern KEY_EQUALS_MATRIX_PATTERN = Pattern.compile(KEY_EQUALS_MATRIX_REGEX);
     private static final Pattern MATRIX_ROW_PATTERN = Pattern.compile(MATRIX_ROW_REGEX);
 
-    static {
-        if (!prepareReferenceTableFile()) {
-            throw new RuntimeException("Could not prepare reference table file");
-        }
-    }
-
     /**
      * Scans the config files located in CONFIG_ROOT_PATH and its subdirectories.
      * Uses DFS to visit all of the subdirectories. Saves the result in {@code scanResult}.
      *
      * @param scanResult map of names and values assigned to them
      */
-    static void scanConfigStructure(String rootPath, Map<String, Integer> scanResult) {
-        File root = new File(rootPath);
+    static void scanConfigStructure(String configRootPath, String referencesFilePath, Map<String, Integer> scanResult) {
+        if (!prepareReferenceTableFile(referencesFilePath)) {
+            throw new RuntimeException("Could not prepare reference table file");
+        }
+
+        scan(configRootPath, referencesFilePath, scanResult);
+    }
+
+    private static void scan(String configRootPath, String referencesFilePath, Map<String, Integer> scanResult) {
+        File root = new File(configRootPath);
         File[] contents = root.listFiles();
         if (contents == null || contents.length == 0) {
             System.err.println(String.format("Directory %s is empty", root.getPath()));
@@ -42,9 +42,9 @@ class AddressGenerator {
         try {
             for (File file : contents) {
                 if (file.isDirectory()) {
-                    scanConfigStructure(file.getPath(), scanResult);
+                    scan(file.getPath(), referencesFilePath, scanResult);
                 } else {
-                    scanFile(file, scanResult);
+                    scanFile(file, scanResult, referencesFilePath);
                 }
             }
         } catch (IOException e) {
@@ -52,7 +52,7 @@ class AddressGenerator {
         }
     }
 
-    private static void scanFile(File file, Map<String, Integer> scanResult) throws IOException {
+    private static void scanFile(File file, Map<String, Integer> scanResult, String referencesFilePath) throws IOException {
         FileReader fileReader = new FileReader(file.getPath());
         BufferedReader bufferedReader = new BufferedReader(fileReader);
         String filePath = file.getPath();
@@ -68,7 +68,7 @@ class AddressGenerator {
                 String name = matcher.group(1);
                 String value = matcher.group(3).trim();
 //                System.out.println(String.format("FOUND: %s %s", name, value));
-                addConfigEntry(name, value, filePath, lineNumber, scanResult);
+                addConfigEntry(name, value, filePath, lineNumber, scanResult, referencesFilePath);
                 continue;
             }
 
@@ -88,7 +88,7 @@ class AddressGenerator {
                 value.append(",").append(bufferedReader.readLine().trim());
             }
 
-            addConfigEntry(name, value.toString(), filePath, tmpLine, scanResult);
+            addConfigEntry(name, value.toString(), filePath, tmpLine, scanResult, referencesFilePath);
         }
     }
 
@@ -107,8 +107,8 @@ class AddressGenerator {
         return false;
     }
 
-    private static boolean prepareReferenceTableFile() {
-        File referenceTableFile = new File(GENERATED_REFERENCES_TABLE_PATH);
+    private static boolean prepareReferenceTableFile(String referencesFilePath) {
+        File referenceTableFile = new File(referencesFilePath);
         try {
             if (!referenceTableFile.exists()) {
                 return referenceTableFile.createNewFile();
@@ -121,11 +121,11 @@ class AddressGenerator {
         return false;
     }
 
-    private static void addConfigEntry(String name, String value, String filePath, int lineNumber, Map<String, Integer> scanResult) {
+    private static void addConfigEntry(String name, String value, String filePath, int lineNumber, Map<String, Integer> scanResult, String referencesTablePath) {
 
         FileWriter fileWriter;
         try {
-            fileWriter = new FileWriter(GENERATED_REFERENCES_TABLE_PATH, true);
+            fileWriter = new FileWriter(referencesTablePath, true);
             Integer id;
             if (scanResult.containsKey(name)) {
                 id = scanResult.get(name);
