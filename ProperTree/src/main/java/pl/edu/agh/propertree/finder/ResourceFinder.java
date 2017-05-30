@@ -134,7 +134,7 @@ public class ResourceFinder {
     private static Address findBestFittingPostfix(int resourceId, String configPostfix) {
         List<Address> filteredAddresses = addresses
                 .stream()
-                .filter(a -> hasCompatiblePostfix())
+                .filter(ResourceFinder::hasCompatiblePostfix)
                 .collect(Collectors.toList());
 
         filteredAddresses = filteredAddresses
@@ -148,7 +148,7 @@ public class ResourceFinder {
         return filteredAddresses.get(0);
     }
 
-    private static boolean hasCompatiblePostfix() {
+    private static boolean hasCompatiblePostfix(Address a) {
         //TODO return false if prefix collides with the given one
         return true;
     }
