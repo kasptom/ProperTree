@@ -22,6 +22,10 @@ public class ResourceFinder {
         addresses = ReferencesParser.parse(referencesPath);
     }
 
+    public static Object getResource(int resourceId) {
+        return getResource(resourceId, "");
+    }
+
     public static Object getResource(int resourceId, String configPostfix) {
         String resourceType = Types.getTypeName(resourceId);
         if (resourceType.equals(Types.INTEGERS.typeName)) return findInteger(resourceId, configPostfix);
