@@ -24,10 +24,7 @@ class AddressGenerator {
      * @param scanResult map of names and values assigned to them
      */
     static void scanConfigStructure(String configRootPath, String referencesFilePath, Map<String, Integer> scanResult) {
-        if (!prepareReferenceTableFile(referencesFilePath)) {
-            throw new RuntimeException("Could not prepare reference table file");
-        }
-
+        ReferencesTableGenerator.prepareReferencesTableFile(referencesFilePath);
         scan(configRootPath, referencesFilePath, scanResult);
     }
 
@@ -107,20 +104,6 @@ class AddressGenerator {
         return false;
     }
 
-    private static boolean prepareReferenceTableFile(String referencesFilePath) {
-        File referenceTableFile = new File(referencesFilePath);
-        try {
-            if (!referenceTableFile.exists()) {
-                return referenceTableFile.createNewFile();
-            } else {
-                return referenceTableFile.delete() && referenceTableFile.createNewFile();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
     private static void addConfigEntry(String name, String value, String filePath, int lineNumber, Map<String, Integer> scanResult, String referencesTablePath) {
 
         FileWriter fileWriter;
@@ -129,7 +112,7 @@ class AddressGenerator {
             Integer id;
             if (scanResult.containsKey(name)) {
                 id = scanResult.get(name);
-                writeReferenceLine(filePath, lineNumber, fileWriter, id);
+                ReferencesTableGenerator.writeReferenceLine(filePath, lineNumber, fileWriter, id);
                 fileWriter.close();
                 return;
             }
@@ -158,18 +141,12 @@ class AddressGenerator {
             }
 
             scanResult.put(name, id);
-            writeReferenceLine(filePath, lineNumber, fileWriter, id);
+            ReferencesTableGenerator.writeReferenceLine(filePath, lineNumber, fileWriter, id);
 
             fileWriter.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    private static void writeReferenceLine(String filePath, int lineNumber, FileWriter fileWriter, Integer id) throws IOException {
-        String idHex = "0x" + Integer.toHexString(id);
-        String toWrite = String.format("%s;%s;%d\n", idHex, filePath, lineNumber);
-        fileWriter.write(toWrite);
     }
 
     static boolean hasInteger(String value) {
