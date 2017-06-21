@@ -1,6 +1,6 @@
 # ProperTree
 
-Project which uses solution similar to Android's [R class](https://developer.android.com/guide/topics/resources/providing-resources.html) for loading the configuration of a project.
+Project which uses solution similar to Android's [R class](https://developer.android.com/guide/topics/resources/providing-resources.html) for loading the configuration of another project.
 
 [![](https://jitpack.io/v/kasptom/ProperTree.svg)](https://jitpack.io/#kasptom/ProperTree)
 
